@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+cantine.db
+cantine.db-shm
+cantine.db-wal
