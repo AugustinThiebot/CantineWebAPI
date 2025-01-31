@@ -1,4 +1,5 @@
-﻿using Cantine.Application.Models;
+﻿using Cantine.Application.Errors;
+using Cantine.Application.Models;
 using Cantine.Application.Services.IServices;
 using Cantine.DataAccess.Repository;
 using Cantine.DataAccess.Repository.IRepository;
@@ -17,7 +18,7 @@ namespace Cantine.Application.Services
         {
             Guid clientId = addbudgetDTO.ClientId;
             decimal amount = addbudgetDTO.Amount;
-            if (amount < 0) {
+            if (amount <= 0) {
                 throw new Exception("Amount can not be negative.");
             }
             try
@@ -25,7 +26,7 @@ namespace Cantine.Application.Services
                 var client = await _clientRepository.GetByIdAsync(clientId);
                 if (client == null)
                 {
-                    throw new Exception("Unknown client.");
+                    throw new ClientNotFoundException(clientId);
                 }
                 client.Budget += amount;
                 await _clientRepository.UpdateAsync(client);

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Cantine.Application.Services;
 using Cantine.Domain;
 using Cantine.Application.Models;
+using Cantine.Application.Errors;
 
 namespace Cantine.Test.Services
 {
@@ -32,8 +33,8 @@ namespace Cantine.Test.Services
                 ClientId = Guid.NewGuid(),
                 Products = new List<string> { "Pain" }
             };
-            var exception = await Assert.ThrowsAsync<Exception>(() => service.GenerateTicketAsync(ticketRequestDTO));
-            Assert.Equal("Unknown client.", exception.Message);
+            var exception = await Assert.ThrowsAsync<ClientNotFoundException>(() => service.GenerateTicketAsync(ticketRequestDTO));
+            Assert.StartsWith("Unknown client : ", exception.Message);
         }
 
         [Theory]
@@ -208,8 +209,7 @@ namespace Cantine.Test.Services
                 case "Stagiaire":
                 case "Visiteur":
                     // 3 menus + 1 Pain
-                    var exception = await Assert.ThrowsAsync<Exception>(() => service.GenerateTicketAsync(ticketRequestDTO));
-                    Assert.Equal("Client budget is too low.", exception.Message);
+                    var exception = await Assert.ThrowsAsync<BudgetTooLowException>(() => service.GenerateTicketAsync(ticketRequestDTO));
                     break;
             }
         }

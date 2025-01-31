@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Cantine.Application.Models;
+using Cantine.Application.Errors;
 
 namespace Cantine.Test.Services
 {
@@ -70,9 +71,8 @@ namespace Cantine.Test.Services
                 ClientId = mockClient.Id,
                 Amount = 15m
             };
-            var exception = await Assert.ThrowsAsync<Exception>(() => budgetService.AddBudgetAsync(addBudgetDTO));
-
-            Assert.Equal("Unknown client.", exception.Message);
+            var exception = await Assert.ThrowsAsync<ClientNotFoundException>(() => budgetService.AddBudgetAsync(addBudgetDTO));
+            Assert.StartsWith("Unknown client : ", exception.Message);
         }
     }
 }

@@ -124,17 +124,14 @@ namespace Cantine.Test.Controllers
         {
             var mockClient = MockData.GetMockVIPClient();
             var mockListProducts = MockData.GetMockListProducts();
-            var mockTicketRequestDTO = new TicketRequestDTO
+            var ticketRequestDTO = new TicketRequestDTO
             {
                 ClientId = mockClient.Id,
                 Products = mockListProducts
             };
             _mockTicketService.Setup(service => service.GenerateTicketAsync(It.IsAny<TicketRequestDTO>())).ThrowsAsync(new Exception("An error occured."));
 
-            var result = await _controller.GenerateTicket(mockTicketRequestDTO);
-
-            var statusCodeResult = Assert.IsType<ObjectResult>(result);
-            Assert.Equal((int)HttpStatusCode.InternalServerError, statusCodeResult.StatusCode);
+            var exception = await Assert.ThrowsAsync<Exception>(() => _controller.GenerateTicket(ticketRequestDTO));
         }
     }
 }

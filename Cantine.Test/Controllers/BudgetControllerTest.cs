@@ -9,6 +9,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Cantine.Application.Models;
+using Cantine.Application.Errors;
+using Cantine.Application.Services;
 
 namespace Cantine.Test.Controllers
 {
@@ -102,17 +104,15 @@ namespace Cantine.Test.Controllers
         public async Task AddBudget_ServiceThrowsException_ReturnsInternalServerError()
         {
             var mockClient = MockData.GetMockVIPClient();
-            var mockAddBudgetDTO = new AddBudgetDTO()
+            var addBudgetDTO = new AddBudgetDTO()
             {
                 ClientId = mockClient.Id,
                 Amount = 15m
             };
-            _mockBudgetService.Setup(service => service.AddBudgetAsync(mockAddBudgetDTO)).ThrowsAsync(new Exception("An error occured."));
+            _mockBudgetService.Setup(service => service.AddBudgetAsync(addBudgetDTO)).ThrowsAsync(new Exception("An error occured."));
 
-            var result = await _controller.AddBudget(mockAddBudgetDTO);
-
-            var statusCodeResult = Assert.IsType<ObjectResult>(result);
-            Assert.Equal((int)HttpStatusCode.InternalServerError, statusCodeResult.StatusCode);
+            var exception = await Assert.ThrowsAsync<Exception>(() => _controller.AddBudget(addBudgetDTO));
+            Assert.Equal("An error occured.", exception.Message);
         }
     }
 }

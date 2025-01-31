@@ -20,7 +20,7 @@ namespace CantineWebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddBudget([FromBody]AddBudgetDTO dto)
+        public async Task<IActionResult> AddBudget([FromBody] AddBudgetDTO dto)
         {
             BudgetValidator validator = new BudgetValidator();
             ValidationResult results = validator.Validate(dto);
@@ -28,15 +28,8 @@ namespace CantineWebAPI.Controllers
             {
                 return BadRequest(results.Errors);
             }
-            try
-            {
-                await _budgetService.AddBudgetAsync(dto);
-                return Ok("Amount successfully added.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Failed to add budget : {ex.Message}");
-            }
+            await _budgetService.AddBudgetAsync(dto);
+            return Ok("Amount successfully added.");
         }
 
 

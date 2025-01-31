@@ -3,6 +3,7 @@ using Cantine.Application.Services.IServices;
 using Cantine.Application.Strategies;
 using Cantine.Application.Models;
 using Cantine.Domain;
+using Cantine.Application.Errors;
 
 namespace Cantine.Application.Services
 {
@@ -24,7 +25,7 @@ namespace Cantine.Application.Services
                 List< string > products = ticketRequestDTO.Products;
                 var client = await _clientRepository.GetByIdAsync(clientId);
                 if (client == null) {
-                    throw new Exception("Unknown client.");
+                    throw new ClientNotFoundException(clientId);
                 }
                 var allProductsDictionary = await _productRepository.GetAllAsync();
                 var menuDictionary = new Dictionary<string, int>
@@ -44,7 +45,7 @@ namespace Cantine.Application.Services
 
                 if (totalToPay > client.Budget && client.Category.Name != "VIP" && client.Category.Name != "Interne")
                 {
-                    throw new Exception("Client budget is too low.");
+                    throw new BudgetTooLowException(totalToPay);
                 }
                 client.Budget -= totalToPay;
                 await _clientRepository.UpdateAsync(client);

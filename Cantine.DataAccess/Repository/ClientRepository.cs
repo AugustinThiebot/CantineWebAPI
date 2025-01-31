@@ -18,7 +18,7 @@ namespace Cantine.DataAccess.Repository
 
         public async Task<Client> GetByIdAsync(Guid id)
         {
-            return await _context.Clients.Include(c => c.Category).FirstAsync(c => c.Id == id);
+            return await _context.Clients.Include(c => c.Category).FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task AddAsync(Client client)

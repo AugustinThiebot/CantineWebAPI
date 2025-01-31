@@ -27,15 +27,8 @@ namespace CantineWebAPI.Controllers
             {
                 return BadRequest(results.Errors);
             }
-            try
-            {
-                var ticket = await _ticketService.GenerateTicketAsync(request);
-                return Ok(ticket);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Failed to order a ticket : {ex.Message}");
-            }
+            var ticket = await _ticketService.GenerateTicketAsync(request);
+            return Ok(ticket);
         }
     }
 }
